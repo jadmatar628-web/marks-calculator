@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Course Average Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="calculator" aria-labelledby="page-title">
+        <div class="intro">
+          <p class="eyebrow">Student Marks</p>
+          <h1 id="page-title">Course Average Calculator</h1>
+          <p>
+            Enter marks out of 100. The calculator applies passing,
+            failing, and compensation rules automatically.
+          </p>
+        </div>
+
+        <form id="marks-form" novalidate>
+          <div class="course-grid" id="course-grid"></div>
+
+          <div class="actions">
+            <button class="primary-button" type="submit">Calculate</button>
+            <button class="secondary-button" type="button" id="reset-button">Reset</button>
+          </div>
+        </form>
+
+        <section class="results" id="results" aria-live="polite">
+          <div>
+            <p class="result-label">Weighted Average</p>
+            <p class="average-value" id="average-value">--</p>
+          </div>
+          <div>
+            <p class="result-label">Overall Status</p>
+            <p class="status-pill waiting" id="overall-status">Waiting for marks</p>
+          </div>
+        </section>
+
+        <section class="table-wrap" aria-labelledby="details-title">
+          <h2 id="details-title">Course Results</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Course</th>
+                <th>Credits</th>
+                <th>Mark</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="result-body">
+              <tr>
+                <td colspan="4" class="empty-state">Results will appear after calculation.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <aside class="rules" aria-label="Rules">
+          <h2>Rules</h2>
+          <ul>
+            <li>Every mark must be between 0 and 100.</li>
+            <li>A course passes with a mark of 50 or higher.</li>
+            <li>If the total weighted average is 55 or higher, a course with 40 to 49 is compensation.</li>
+            <li>Any course below 40 is fail.</li>
+          </ul>
+        </aside>
+
+        <footer class="site-footer">
+          <p>Made by Jad Matar</p>
+          <a href="https://wa.me/96181850192" target="_blank" rel="noopener">
+            WhatsApp +961 81 850 192
+          </a>
+        </footer>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
