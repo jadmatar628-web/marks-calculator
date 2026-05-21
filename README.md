@@ -19,7 +19,7 @@ A static GitHub Pages website for calculating weighted course averages and cours
 | I2204 | 5 |
 | I2205 | 3 |
 | M2250 | 3 |
-| I2236 | 3 |
+| I2231/Python | 3 |
 | S2250 | 4 |
 
 ## Publish on GitHub Pages

@@ -5,7 +5,7 @@ const courses = [
   { code: "I2204", credits: 5 },
   { code: "I2205", credits: 3 },
   { code: "M2250", credits: 3 },
-  { code: "I2236", credits: 3 },
+  { code: "I2231", name: "I2231/Python", credits: 3 },
   { code: "S2250", credits: 4 }
 ];
 
@@ -22,7 +22,7 @@ function buildInputs() {
       (course) => `
         <div class="course-field">
           <label for="${course.code}">
-            <span>${course.code}</span>
+            <span>${course.name || course.code}</span>
             <span class="credits">${course.credits} credits</span>
           </label>
           <input
@@ -99,7 +99,7 @@ function renderResults(marks) {
     .map(
       (course) => `
         <tr>
-          <td>${course.code}</td>
+          <td>${course.name || course.code}</td>
           <td>${course.credits}</td>
           <td>${course.mark.toFixed(2)}</td>
           <td>
