@@ -1,6 +1,6 @@
 # Course Average Calculator
 
-A static GitHub Pages website for calculating weighted course averages and course statuses.
+A static GitHub Pages website for calculating weighted course averages and course statuses for Sem 3 and Sem 4.
 
 ## Rules
 
@@ -9,7 +9,7 @@ A static GitHub Pages website for calculating weighted course averages and cours
 - If the total weighted average is 55 or higher, any course mark from 40 to 49 is marked as compensation.
 - Any course mark below 40 is marked as fail.
 
-## Courses
+## Sem 3 Courses
 
 | Course | Credits |
 | --- | ---: |
@@ -21,6 +21,18 @@ A static GitHub Pages website for calculating weighted course averages and cours
 | M2250 | 3 |
 | I2231/Python | 3 |
 | S2250 | 4 |
+
+## Sem 4 Courses
+
+| Course | Credits |
+| --- | ---: |
+| I2206 | 5 |
+| I211 | 5 |
+| I2207 | 4 |
+| I2208 | 4 |
+| I2209 | 4 |
+| I2210 | 5 |
+| I2236/Optional Course | 3 |
 
 ## Publish on GitHub Pages
 

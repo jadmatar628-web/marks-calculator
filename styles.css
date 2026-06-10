@@ -99,6 +99,60 @@ form {
   padding: 20px;
 }
 
+.semester-picker {
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
+}
+
+.semester-picker legend {
+  margin-bottom: 6px;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.semester-picker p {
+  margin-bottom: 12px;
+  color: var(--muted);
+}
+
+.semester-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.semester-options label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-strong);
+  color: var(--muted);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.semester-options input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.semester-options label:has(input:checked) {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.semester-options label:focus-within {
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
 .course-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -305,7 +359,8 @@ tr:last-child td {
 @media (max-width: 820px) {
   .calculator,
   .results,
-  .course-grid {
+  .course-grid,
+  .semester-options {
     grid-template-columns: 1fr;
   }
 

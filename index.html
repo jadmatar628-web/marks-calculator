@@ -19,6 +19,21 @@
         </div>
 
         <form id="marks-form" novalidate>
+          <fieldset class="semester-picker" aria-describedby="semester-help">
+            <legend>Choose your semester</legend>
+            <p id="semester-help">Select the semester before entering marks.</p>
+            <div class="semester-options">
+              <label>
+                <input type="radio" name="semester" value="sem3" checked>
+                <span>Sem 3</span>
+              </label>
+              <label>
+                <input type="radio" name="semester" value="sem4">
+                <span>Sem 4</span>
+              </label>
+            </div>
+          </fieldset>
+
           <div class="course-grid" id="course-grid"></div>
 
           <div class="actions">

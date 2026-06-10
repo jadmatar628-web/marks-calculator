@@ -1,13 +1,32 @@
-const courses = [
-  { code: "I2201", credits: 4 },
-  { code: "I2202", credits: 4 },
-  { code: "I2203", credits: 4 },
-  { code: "I2204", credits: 5 },
-  { code: "I2205", credits: 3 },
-  { code: "M2250", credits: 3 },
-  { code: "I2231", name: "I2231/Python", credits: 3 },
-  { code: "S2250", credits: 4 }
-];
+const semesters = {
+  sem3: {
+    label: "Sem 3",
+    courses: [
+      { code: "I2201", credits: 4 },
+      { code: "I2202", credits: 4 },
+      { code: "I2203", credits: 4 },
+      { code: "I2204", credits: 5 },
+      { code: "I2205", credits: 3 },
+      { code: "M2250", credits: 3 },
+      { code: "I2231", name: "I2231/Python", credits: 3 },
+      { code: "S2250", credits: 4 }
+    ]
+  },
+  sem4: {
+    label: "Sem 4",
+    courses: [
+      { code: "I2206", credits: 5 },
+      { code: "I211", credits: 5 },
+      { code: "I2207", credits: 4 },
+      { code: "I2208", credits: 4 },
+      { code: "I2209", credits: 4 },
+      { code: "I2210", credits: 5 },
+      { code: "I2236", name: "I2236/Optional Course", credits: 3 }
+    ]
+  }
+};
+
+let selectedSemester = "sem3";
 
 const courseGrid = document.querySelector("#course-grid");
 const form = document.querySelector("#marks-form");
@@ -15,9 +34,14 @@ const resultBody = document.querySelector("#result-body");
 const averageValue = document.querySelector("#average-value");
 const overallStatus = document.querySelector("#overall-status");
 const resetButton = document.querySelector("#reset-button");
+const semesterInputs = document.querySelectorAll('input[name="semester"]');
+
+function getCourses() {
+  return semesters[selectedSemester].courses;
+}
 
 function buildInputs() {
-  courseGrid.innerHTML = courses
+  courseGrid.innerHTML = getCourses()
     .map(
       (course) => `
         <div class="course-field">
@@ -46,7 +70,7 @@ function buildInputs() {
 function readMarks() {
   let hasError = false;
 
-  const marks = courses.map((course) => {
+  const marks = getCourses().map((course) => {
     const input = document.querySelector(`#${course.code}`);
     const error = document.querySelector(`#${course.code}-error`);
     const mark = Number(input.value);
@@ -125,11 +149,13 @@ function showValidationMessage() {
 }
 
 function resetResults() {
-  form.reset();
+  courseGrid.querySelectorAll("input").forEach((input) => {
+    input.value = "";
+  });
   document.querySelectorAll(".error").forEach((error) => {
     error.textContent = "";
   });
-  document.querySelectorAll("input").forEach((input) => {
+  courseGrid.querySelectorAll("input").forEach((input) => {
     input.setAttribute("aria-invalid", "false");
   });
   averageValue.textContent = "--";
@@ -143,6 +169,14 @@ function resetResults() {
 }
 
 buildInputs();
+
+semesterInputs.forEach((input) => {
+  input.addEventListener("change", () => {
+    selectedSemester = input.value;
+    buildInputs();
+    resetResults();
+  });
+});
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
