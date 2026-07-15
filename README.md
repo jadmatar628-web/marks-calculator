@@ -33,11 +33,3 @@ A static GitHub Pages website for calculating weighted course averages and cours
 | I2209 | 4 |
 | I2210 | 5 |
 | I2236/Optional Course | 3 |
-
-## Publish on GitHub Pages
-
-1. Create a new GitHub repository.
-2. Upload `index.html`, `styles.css`, `script.js`, and `README.md`.
-3. Go to repository `Settings` > `Pages`.
-4. Set source to `Deploy from a branch`.
-5. Select the `main` branch and `/root`, then save.
