@@ -1,4 +1,4 @@
-# Course Average Calculator
+# Course Average Calculator BY JAD MATAR
 
 A static GitHub Pages website for calculating weighted course averages and course statuses for Sem 3 and Sem 4.
 
