@@ -12,6 +12,7 @@ const semesters = {
       { code: "S2250", credits: 4 }
     ]
   },
+
   sem4: {
     label: "Sem 4",
     courses: [
@@ -32,9 +33,13 @@ const courseGrid = document.querySelector("#course-grid");
 const form = document.querySelector("#marks-form");
 const resultBody = document.querySelector("#result-body");
 const averageValue = document.querySelector("#average-value");
+const gpaValue = document.querySelector("#gpa-value");
+const gpaNote = document.querySelector("#gpa-note");
 const overallStatus = document.querySelector("#overall-status");
 const resetButton = document.querySelector("#reset-button");
-const semesterInputs = document.querySelectorAll('input[name="semester"]');
+const semesterInputs = document.querySelectorAll(
+  'input[name="semester"]'
+);
 
 function getCourses() {
   return semesters[selectedSemester].courses;
@@ -49,6 +54,7 @@ function buildInputs() {
             <span>${course.name || course.code}</span>
             <span class="credits">${course.credits} credits</span>
           </label>
+
           <input
             id="${course.code}"
             name="${course.code}"
@@ -60,7 +66,12 @@ function buildInputs() {
             placeholder="0 - 100"
             required
           >
-          <span class="error" id="${course.code}-error" aria-live="polite"></span>
+
+          <span
+            class="error"
+            id="${course.code}-error"
+            aria-live="polite"
+          ></span>
         </div>
       `
     )
@@ -72,19 +83,36 @@ function readMarks() {
 
   const marks = getCourses().map((course) => {
     const input = document.querySelector(`#${course.code}`);
-    const error = document.querySelector(`#${course.code}-error`);
+    const error = document.querySelector(
+      `#${course.code}-error`
+    );
+
     const mark = Number(input.value);
     const isEmpty = input.value.trim() === "";
-    const isInvalid = isEmpty || Number.isNaN(mark) || mark < 0 || mark > 100;
 
-    input.setAttribute("aria-invalid", String(isInvalid));
-    error.textContent = isInvalid ? "Enter a mark from 0 to 100." : "";
+    const isInvalid =
+      isEmpty ||
+      Number.isNaN(mark) ||
+      mark < 0 ||
+      mark > 100;
+
+    input.setAttribute(
+      "aria-invalid",
+      String(isInvalid)
+    );
+
+    error.textContent = isInvalid
+      ? "Enter a mark from 0 to 100."
+      : "";
 
     if (isInvalid) {
       hasError = true;
     }
 
-    return { ...course, mark };
+    return {
+      ...course,
+      mark
+    };
   });
 
   return hasError ? null : marks;
@@ -98,6 +126,257 @@ function getCourseStatus(mark, average) {
   if (average >= 55 && mark >= 40) {
     return "Compensation";
   }
+
+  return "Fail";
+}
+
+function interpolate(
+  value,
+  minValue,
+  maxValue,
+  minGpa,
+  maxGpa
+) {
+  const ratio =
+    (value - minValue) /
+    (maxValue - minValue);
+
+  return minGpa + ratio * (maxGpa - minGpa);
+}
+
+function calculateGpa(average) {
+  if (average < 50) {
+    return null;
+  }
+
+  if (average < 63) {
+    return interpolate(
+      average,
+      50,
+      63,
+      2.20,
+      3.02
+    );
+  }
+
+  if (average < 72) {
+    return interpolate(
+      average,
+      63,
+      72,
+      3.02,
+      3.63
+    );
+  }
+
+  if (average < 80) {
+    return interpolate(
+      average,
+      72,
+      80,
+      3.63,
+      4.00
+    );
+  }
+
+  return 4.00;
+}
+
+function renderResults(marks) {
+  const totalCredits = marks.reduce(
+    (sum, course) => sum + course.credits,
+    0
+  );
+
+  const weightedTotal = marks.reduce(
+    (sum, course) =>
+      sum + course.mark * course.credits,
+    0
+  );
+
+  const average =
+    weightedTotal / totalCredits;
+
+  const gpa = calculateGpa(average);
+
+  const coursesWithStatus = marks.map(
+    (course) => ({
+      ...course,
+      status: getCourseStatus(
+        course.mark,
+        average
+      )
+    })
+  );
+
+  const hasFailedCourse =
+    coursesWithStatus.some(
+      (course) =>
+        course.status === "Fail"
+    );
+
+  averageValue.textContent =
+    average.toFixed(2);
+
+  if (gpa === null) {
+    gpaValue.textContent = "--";
+    gpaNote.textContent =
+      "The provided LU conversion table starts at an average of 50%.";
+  } else {
+    gpaValue.textContent =
+      gpa.toFixed(2);
+
+    gpaNote.textContent =
+      "Estimated from the Lebanese University conversion ranges.";
+  }
+
+  overallStatus.textContent =
+    hasFailedCourse
+      ? "Fail"
+      : "Pass";
+
+  overallStatus.className =
+    `status-pill ${
+      hasFailedCourse
+        ? "fail"
+        : "pass"
+    }`;
+
+  resultBody.innerHTML =
+    coursesWithStatus
+      .map(
+        (course) => `
+          <tr>
+            <td>
+              ${course.name || course.code}
+            </td>
+
+            <td>
+              ${course.credits}
+            </td>
+
+            <td>
+              ${course.mark.toFixed(2)}
+            </td>
+
+            <td>
+              <span
+                class="course-status ${course.status.toLowerCase()}"
+              >
+                ${course.status}
+              </span>
+            </td>
+          </tr>
+        `
+      )
+      .join("");
+}
+
+function showValidationMessage() {
+  averageValue.textContent = "--";
+  gpaValue.textContent = "--";
+
+  gpaNote.textContent =
+    "Fix the invalid marks before calculating GPA.";
+
+  overallStatus.textContent =
+    "Check marks";
+
+  overallStatus.className =
+    "status-pill not-ready";
+
+  resultBody.innerHTML = `
+    <tr>
+      <td
+        colspan="4"
+        class="empty-state"
+      >
+        Fix highlighted marks to calculate results.
+      </td>
+    </tr>
+  `;
+}
+
+function resetResults() {
+  courseGrid
+    .querySelectorAll("input")
+    .forEach((input) => {
+      input.value = "";
+    });
+
+  document
+    .querySelectorAll(".error")
+    .forEach((error) => {
+      error.textContent = "";
+    });
+
+  courseGrid
+    .querySelectorAll("input")
+    .forEach((input) => {
+      input.setAttribute(
+        "aria-invalid",
+        "false"
+      );
+    });
+
+  averageValue.textContent = "--";
+  gpaValue.textContent = "--";
+
+  gpaNote.textContent =
+    "Based on the Lebanese University conversion table";
+
+  overallStatus.textContent =
+    "Waiting for marks";
+
+  overallStatus.className =
+    "status-pill waiting";
+
+  resultBody.innerHTML = `
+    <tr>
+      <td
+        colspan="4"
+        class="empty-state"
+      >
+        Results will appear after calculation.
+      </td>
+    </tr>
+  `;
+}
+
+buildInputs();
+
+semesterInputs.forEach((input) => {
+  input.addEventListener(
+    "change",
+    () => {
+      selectedSemester =
+        input.value;
+
+      buildInputs();
+      resetResults();
+    }
+  );
+});
+
+form.addEventListener(
+  "submit",
+  (event) => {
+    event.preventDefault();
+
+    const marks = readMarks();
+
+    if (marks) {
+      renderResults(marks);
+    } else {
+      showValidationMessage();
+    }
+  }
+);
+
+resetButton.addEventListener(
+  "click",
+  resetResults
+);  }
 
   return "Fail";
 }
