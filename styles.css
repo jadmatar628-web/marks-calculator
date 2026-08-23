@@ -99,19 +99,22 @@ form {
   padding: 20px;
 }
 
-.semester-picker {
+.semester-picker,
+.exam-picker {
   margin: 0 0 18px;
   padding: 0;
   border: 0;
 }
 
-.semester-picker legend {
+.semester-picker legend,
+.exam-picker legend {
   margin-bottom: 6px;
   font-size: 1rem;
   font-weight: 800;
 }
 
-.semester-picker p {
+.semester-picker p,
+.exam-picker p {
   margin-bottom: 12px;
   color: var(--muted);
 }
@@ -153,6 +156,22 @@ form {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
 }
 
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  color: var(--text);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.checkbox-row input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
 .course-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -179,6 +198,27 @@ form {
   color: var(--muted);
   font-size: 0.88rem;
   font-weight: 600;
+}
+
+.mark-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mark-inputs.single {
+  grid-template-columns: 1fr;
+}
+
+.mark-input {
+  display: grid;
+  gap: 6px;
+}
+
+.mark-input span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 input {
@@ -360,7 +400,8 @@ tr:last-child td {
   .calculator,
   .results,
   .course-grid,
-  .semester-options {
+  .semester-options,
+  .mark-inputs {
     grid-template-columns: 1fr;
   }
 

@@ -53,6 +53,46 @@
             </div>
           </fieldset>
 
+          <fieldset
+            class="exam-picker"
+            aria-describedby="exam-help"
+          >
+            <legend>Choose exam type</legend>
+
+            <p id="exam-help">
+              Partial marks are over 30. Final course grades are over 100.
+            </p>
+
+            <div class="semester-options">
+              <label>
+                <input
+                  type="radio"
+                  name="exam-type"
+                  value="partial"
+                  checked
+                >
+                <span>Partial exams</span>
+              </label>
+
+              <label>
+                <input
+                  type="radio"
+                  name="exam-type"
+                  value="final"
+                >
+                <span>Final exams</span>
+              </label>
+            </div>
+
+            <label class="checkbox-row">
+              <input
+                type="checkbox"
+                id="no-partial"
+              >
+              <span>No partial exams</span>
+            </label>
+          </fieldset>
+
           <div
             class="course-grid"
             id="course-grid"
@@ -164,6 +204,20 @@
             </li>
 
             <li>
+              Partial exam marks are entered over 30.
+            </li>
+
+            <li>
+              Final exam marks are entered over 70 and added
+              to the partial mark.
+            </li>
+
+            <li>
+              If there are no partial exams, the final mark is
+              entered directly over 100.
+            </li>
+
+            <li>
               A course passes with a mark of 50 or higher.
             </li>
 
@@ -219,6 +273,6 @@
       </section>
     </main>
 
-    <script src="script.js?v=3"></script>
+    <script src="script.js?v=4"></script>
   </body>
 </html>
