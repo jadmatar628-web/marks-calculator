@@ -383,7 +383,7 @@ function resetResults() {
   gpaNote.textContent =
     "Based on the Lebanese University conversion table";
 
-  overallStatus.textContent = "Waiting for marks";
+  overallStatus.textContent = "Awaiting marks";
   overallStatus.className = "status-pill waiting";
 
   resultBody.innerHTML = `

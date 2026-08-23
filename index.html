@@ -3,291 +3,216 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Course Average & GPA Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta
+      name="description"
+      content="Calculate weighted course averages, semester GPA, pass, fail, and compensation results."
+    >
+    <title>Course Average &amp; GPA Calculator</title>
+    <link rel="stylesheet" href="styles.css?v=7">
   </head>
 
   <body>
     <main class="app-shell">
       <section class="calculator" aria-labelledby="page-title">
-
-        <div class="intro">
+        <header class="intro">
           <p class="eyebrow">Student marks</p>
-          <h1 id="page-title">Course Average & GPA Calculator</h1>
+          <h1 id="page-title">Course Average &amp; GPA Calculator</h1>
           <p>
-            Choose your semester and mark type, enter whole-number grades,
-            and get the weighted result instantly.
+            Select a semester and mark type, then enter whole-number grades
+            to calculate your weighted result.
           </p>
+        </header>
+
+        <div class="primary-column">
+          <form id="marks-form" novalidate>
+            <div class="picker-grid">
+              <fieldset
+                class="semester-picker"
+                aria-describedby="semester-help"
+              >
+                <legend>Semester</legend>
+                <p id="semester-help">Choose the semester you are taking.</p>
+
+                <div class="semester-options">
+                  <label>
+                    <input
+                      type="radio"
+                      name="semester"
+                      value="sem3"
+                      checked
+                    >
+                    <span>Sem 3</span>
+                  </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="semester"
+                      value="sem4"
+                    >
+                    <span>Sem 4</span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset
+                class="exam-picker"
+                aria-describedby="exam-help"
+              >
+                <legend>Mark type</legend>
+                <p id="exam-help">Enter one value per course.</p>
+
+                <div class="semester-options mode-options">
+                  <label>
+                    <input
+                      type="radio"
+                      name="mark-mode"
+                      value="partial"
+                      checked
+                    >
+                    <span>Partial <small>/30</small></span>
+                  </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="mark-mode"
+                      value="final70"
+                    >
+                    <span>Final <small>/70</small></span>
+                  </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="mark-mode"
+                      value="final100"
+                    >
+                    <span>Course grade <small>/100</small></span>
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="course-grid" id="course-grid"></div>
+
+            <div class="actions">
+              <button class="primary-button" type="submit">
+                Calculate
+              </button>
+
+              <button
+                class="secondary-button"
+                type="button"
+                id="reset-button"
+              >
+                Reset
+              </button>
+            </div>
+          </form>
+
+          <section class="table-wrap" aria-labelledby="details-title">
+            <h2 id="details-title">Course results</h2>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Credits</th>
+                  <th>Mark</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+
+              <tbody id="result-body">
+                <tr>
+                  <td colspan="4" class="empty-state">
+                    Results will appear after calculation.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
         </div>
 
-        <form id="marks-form" novalidate>
-          <fieldset
-            class="semester-picker"
-            aria-describedby="semester-help"
-          >
-            <legend>Choose your semester</legend>
-
-            <p id="semester-help">
-              Select the semester before entering marks.
-            </p>
-
-            <div class="semester-options">
-              <label>
-                <input
-                  type="radio"
-                  name="semester"
-                  value="sem3"
-                  checked
-                >
-                <span>Sem 3</span>
-              </label>
-
-              <label>
-                <input
-                  type="radio"
-                  name="semester"
-                  value="sem4"
-                >
-                <span>Sem 4</span>
-              </label>
+        <div class="side-column">
+          <section class="results" id="results" aria-live="polite">
+            <div>
+              <p class="result-label">Weighted average</p>
+              <p class="average-value" id="average-value">--</p>
             </div>
-          </fieldset>
 
-          <fieldset
-            class="exam-picker"
-            aria-describedby="exam-help"
-          >
-            <legend>Choose what to calculate</legend>
-
-            <p id="exam-help">
-              Pick one mark type. You will only enter one value per course.
-            </p>
-
-            <div class="semester-options mode-options">
-              <label>
-                <input
-                  type="radio"
-                  name="mark-mode"
-                  value="partial"
-                  checked
-                >
-                <span>Partial /30</span>
-              </label>
-
-              <label>
-                <input
-                  type="radio"
-                  name="mark-mode"
-                  value="final70"
-                >
-                <span>Final exam /70</span>
-              </label>
-
-              <label>
-                <input
-                  type="radio"
-                  name="mark-mode"
-                  value="final100"
-                >
-                <span>Course grade /100</span>
-              </label>
+            <div>
+              <p class="result-label">Estimated semester GPA</p>
+              <p class="average-value" id="gpa-value">--</p>
+              <p class="gpa-note" id="gpa-note">
+                Based on the Lebanese University conversion table
+              </p>
             </div>
-          </fieldset>
 
-          <div
-            class="course-grid"
-            id="course-grid"
-          ></div>
+            <div>
+              <p class="result-label">Overall status</p>
+              <p class="status-pill waiting" id="overall-status">
+                Awaiting marks
+              </p>
+            </div>
+          </section>
 
-          <div class="actions">
-            <button
-              class="primary-button"
-              type="submit"
-            >
-              Calculate
-            </button>
+          <aside class="rules" aria-label="Rules">
+            <h2>Rules</h2>
 
-            <button
-              class="secondary-button"
-              type="button"
-              id="reset-button"
-            >
-              Reset
-            </button>
-          </div>
-        </form>
-
-        <section
-          class="results"
-          id="results"
-          aria-live="polite"
-        >
-
-          <div>
-            <p class="result-label">Weighted Average</p>
-            <p
-              class="average-value"
-              id="average-value"
-            >
-              --
-            </p>
-          </div>
-
-          <div>
-            <p class="result-label">Estimated Semester GPA</p>
-
-            <p
-              class="average-value"
-              id="gpa-value"
-            >
-              --
-            </p>
-
-            <p
-              class="gpa-note"
-              id="gpa-note"
-            >
-              Based on the Lebanese University conversion table
-            </p>
-          </div>
-
-          <div>
-            <p class="result-label">Overall Status</p>
-
-            <p
-              class="status-pill waiting"
-              id="overall-status"
-            >
-              Waiting for marks
-            </p>
-          </div>
-
-        </section>
-
-        <section
-          class="table-wrap"
-          aria-labelledby="details-title"
-        >
-          <h2 id="details-title">Course Results</h2>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Course</th>
-                <th>Credits</th>
-                <th>Mark</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-
-            <tbody id="result-body">
-              <tr>
-                <td
-                  colspan="4"
-                  class="empty-state"
-                >
-                  Results will appear after calculation.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <aside
-          class="rules"
-          aria-label="Rules"
-        >
-          <h2>Rules</h2>
-
-          <ul>
-            <li>
-              Marks must be whole numbers.
-            </li>
-
-            <li>
-              Partial marks are entered over 30.
-            </li>
-
-            <li>
-              Final exam marks are entered over 70 and shown independently.
-            </li>
-
-            <li>
-              Course grade marks are entered over 100 and use the
-              pass, compensation, GPA, and fail rules.
-            </li>
-
-            <li>
-              A course passes with a mark of 50 or higher.
-            </li>
-
-            <li>
-              If the total weighted average is 55 or higher,
-              a course with 40 to 49 is compensation.
-            </li>
-
-            <li>
-              Any course below 40 is fail.
-            </li>
-
-            <li>
-              Semester GPA is calculated from the
-              credit-weighted semester average.
-            </li>
-
-            <li>
-              LU average 50–63% corresponds to GPA 2.20–3.02.
-            </li>
-
-            <li>
-              LU average 63–72% corresponds to GPA 3.02–3.63.
-            </li>
-
-            <li>
-              LU average 72–80% corresponds to GPA 3.63–4.00.
-            </li>
-
-            <li>
-              Averages of 80% or higher are shown as 4.00.
-            </li>
-
-            <li>
-              GPA values between the published boundaries
-              are estimated proportionally within each range.
-            </li>
-          </ul>
-        </aside>
+            <ul>
+              <li>Marks must be whole numbers.</li>
+              <li>Partial marks are entered over 30.</li>
+              <li>Final exam marks are entered over 70 and shown independently.</li>
+              <li>
+                Course grades are entered over 100 and use the pass,
+                compensation, GPA, and fail rules.
+              </li>
+              <li>A course passes with a mark of 50 or higher.</li>
+              <li>
+                If the weighted average is 55 or higher, a course with
+                40 to 49 is compensation.
+              </li>
+              <li>Any course below 40 is a fail.</li>
+              <li>GPA is calculated from the credit-weighted semester average.</li>
+              <li>LU average 50-63% corresponds to GPA 2.20-3.02.</li>
+              <li>LU average 63-72% corresponds to GPA 3.02-3.63.</li>
+              <li>LU average 72-80% corresponds to GPA 3.63-4.00.</li>
+              <li>Averages of 80% or higher are shown as 4.00.</li>
+              <li>
+                GPA values between published boundaries are estimated
+                proportionally.
+              </li>
+            </ul>
+          </aside>
+        </div>
 
         <footer class="site-footer">
           <a
             class="dsa-promo"
-            href="https://github.com/jadmatar628-web/SORTING_ALGORITHMS"
+            href="https://jadmatar628-web.github.io/SORTING_ALGORITHMS/"
             target="_blank"
             rel="noopener"
           >
-            <span>
-              Taking I2206 DSA?
-            </span>
-
-            <strong>
-              Open Jad's Sorting Algorithms helper
-            </strong>
+            <span>Taking I2206 DSA?</span>
+            <strong>Open Jad's Sorting Algorithms helper</strong>
           </a>
 
-          <p>Made by Jad Matar</p>
-
-          <a
-            href="https://wa.me/96181850192"
-            target="_blank"
-            rel="noopener"
-          >
-            WhatsApp +961 81 850 192
-          </a>
+          <div class="footer-meta">
+            <p>Made by Jad Matar</p>
+            <a
+              href="https://wa.me/96181850192"
+              target="_blank"
+              rel="noopener"
+            >
+              WhatsApp +961 81 850 192
+            </a>
+          </div>
         </footer>
-
       </section>
     </main>
 
-    <script src="script.js?v=6"></script>
+    <script src="script.js?v=7"></script>
   </body>
 </html>
