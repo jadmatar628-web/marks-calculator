@@ -57,40 +57,41 @@
             class="exam-picker"
             aria-describedby="exam-help"
           >
-            <legend>Choose exam type</legend>
+            <legend>Choose what to calculate</legend>
 
             <p id="exam-help">
-              Partial marks are over 30. Final course grades are over 100.
+              Pick one mark type. You will only enter one value per course.
             </p>
 
-            <div class="semester-options">
+            <div class="semester-options mode-options">
               <label>
                 <input
                   type="radio"
-                  name="exam-type"
+                  name="mark-mode"
                   value="partial"
                   checked
                 >
-                <span>Partial exams</span>
+                <span>Partial /30</span>
               </label>
 
               <label>
                 <input
                   type="radio"
-                  name="exam-type"
-                  value="final"
+                  name="mark-mode"
+                  value="final70"
                 >
-                <span>Final exams</span>
+                <span>Final exam /70</span>
+              </label>
+
+              <label>
+                <input
+                  type="radio"
+                  name="mark-mode"
+                  value="final100"
+                >
+                <span>Course grade /100</span>
               </label>
             </div>
-
-            <label class="checkbox-row">
-              <input
-                type="checkbox"
-                id="no-partial"
-              >
-              <span>No partial exams</span>
-            </label>
           </fieldset>
 
           <div
@@ -200,21 +201,20 @@
 
           <ul>
             <li>
-              Every mark must be between 0 and 100.
+              Marks must be whole numbers.
             </li>
 
             <li>
-              Partial exam marks are entered over 30.
+              Partial marks are entered over 30.
             </li>
 
             <li>
-              Final exam marks are entered over 70 and added
-              to the partial mark.
+              Final exam marks are entered over 70 and shown independently.
             </li>
 
             <li>
-              If there are no partial exams, the final mark is
-              entered directly over 100.
+              Course grade marks are entered over 100 and use the
+              pass, compensation, GPA, and fail rules.
             </li>
 
             <li>
@@ -273,6 +273,6 @@
       </section>
     </main>
 
-    <script src="script.js?v=4"></script>
+    <script src="script.js?v=5"></script>
   </body>
 </html>

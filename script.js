@@ -28,7 +28,7 @@ const semesters = {
 };
 
 let selectedSemester = "sem3";
-let selectedExamType = "partial";
+let selectedMarkMode = "partial";
 
 const courseGrid = document.querySelector("#course-grid");
 const form = document.querySelector("#marks-form");
@@ -39,107 +39,73 @@ const gpaNote = document.querySelector("#gpa-note");
 const overallStatus = document.querySelector("#overall-status");
 const resetButton = document.querySelector("#reset-button");
 const semesterInputs = document.querySelectorAll('input[name="semester"]');
-const examTypeInputs = document.querySelectorAll('input[name="exam-type"]');
-const noPartialInput = document.querySelector("#no-partial");
+const markModeInputs = document.querySelectorAll('input[name="mark-mode"]');
 
 function getCourses() {
   return semesters[selectedSemester].courses;
 }
 
-function isNoPartialSelected() {
-  return selectedExamType === "final" && noPartialInput.checked;
-}
-
 function getInputConfig() {
-  if (selectedExamType === "partial") {
+  if (selectedMarkMode === "partial") {
     return {
       mode: "partial",
-      fields: [
-        {
-          key: "partial",
-          label: "Partial /30",
-          max: 30,
-          placeholder: "0 - 30",
-          required: true
-        }
-      ]
+      label: "Partial",
+      resultLabel: "Partial only",
+      max: 30,
+      inputLabel: "Partial mark /30",
+      placeholder: "0 - 30"
     };
   }
 
-  if (isNoPartialSelected()) {
+  if (selectedMarkMode === "final70") {
     return {
-      mode: "final-no-partial",
-      fields: [
-        {
-          key: "final",
-          label: "Final grade /100",
-          max: 100,
-          placeholder: "0 - 100",
-          required: true
-        }
-      ]
+      mode: "final70",
+      label: "Final exam",
+      resultLabel: "Final exam only",
+      max: 70,
+      inputLabel: "Final exam /70",
+      placeholder: "0 - 70"
     };
   }
 
   return {
-    mode: "final-with-partial",
-    fields: [
-      {
-        key: "partial",
-        label: "Partial /30",
-        max: 30,
-        placeholder: "0 - 30",
-        required: true
-      },
-      {
-        key: "final",
-        label: "Final /70",
-        max: 70,
-        placeholder: "0 - 70",
-        required: true
-      }
-    ]
+    mode: "final100",
+    label: "Course grade",
+    resultLabel: "Course grade",
+    max: 100,
+    inputLabel: "Course grade /100",
+    placeholder: "0 - 100"
   };
 }
 
 function buildInputs() {
   const config = getInputConfig();
-  const inputClass =
-    config.fields.length === 1
-      ? "mark-inputs single"
-      : "mark-inputs";
 
   courseGrid.innerHTML = getCourses()
     .map(
       (course) => `
         <div class="course-field">
-          <label for="${course.code}-${config.fields[0].key}">
+          <label for="${course.code}-mark">
             <span>${course.name || course.code}</span>
             <span class="credits">${course.credits} credits</span>
           </label>
 
-          <div class="${inputClass}">
-            ${config.fields
-              .map(
-                (field) => `
-                  <label class="mark-input" for="${course.code}-${field.key}">
-                    <span>${field.label}</span>
+          <div class="mark-inputs single">
+            <label class="mark-input" for="${course.code}-mark">
+              <span>${config.inputLabel}</span>
 
-                    <input
-                      id="${course.code}-${field.key}"
-                      name="${course.code}-${field.key}"
-                      type="number"
-                      min="0"
-                      max="${field.max}"
-                      step="0.01"
-                      inputmode="decimal"
-                      placeholder="${field.placeholder}"
-                      ${field.required ? "required" : ""}
-                    >
-                  </label>
-                `
-              )
-              .join("")}
+              <input
+                id="${course.code}-mark"
+                name="${course.code}-mark"
+                type="number"
+                min="0"
+                max="${config.max}"
+                step="1"
+                inputmode="numeric"
+                placeholder="${config.placeholder}"
+                required
+              >
+            </label>
           </div>
 
           <span
@@ -153,7 +119,7 @@ function buildInputs() {
     .join("");
 }
 
-function validateField(input, field) {
+function validateMark(input, max) {
   const value = input.value.trim();
   const mark = Number(value);
   const isEmpty = value === "";
@@ -161,8 +127,9 @@ function validateField(input, field) {
   const isInvalid =
     isEmpty ||
     Number.isNaN(mark) ||
+    !Number.isInteger(mark) ||
     mark < 0 ||
-    mark > field.max;
+    mark > max;
 
   input.setAttribute("aria-invalid", String(isInvalid));
 
@@ -178,37 +145,20 @@ function readMarks() {
 
   const marks = getCourses().map((course) => {
     const error = document.querySelector(`#${course.code}-error`);
-    const fieldMarks = {};
-    const invalidFields = [];
+    const input = document.querySelector(`#${course.code}-mark`);
+    const result = validateMark(input, config.max);
 
-    config.fields.forEach((field) => {
-      const input = document.querySelector(`#${course.code}-${field.key}`);
-      const result = validateField(input, field);
-
-      fieldMarks[field.key] = result.mark;
-
-      if (result.isInvalid) {
-        invalidFields.push(field.label);
-      }
-    });
-
-    error.textContent = invalidFields.length > 0
-      ? "Enter valid marks for this course."
+    error.textContent = result.isInvalid
+      ? `Enter a whole number from 0 to ${config.max}.`
       : "";
 
-    if (invalidFields.length > 0) {
+    if (result.isInvalid) {
       hasError = true;
     }
 
-    const mark =
-      config.mode === "partial"
-        ? fieldMarks.partial
-        : (fieldMarks.partial || 0) + fieldMarks.final;
-
     return {
       ...course,
-      ...fieldMarks,
-      mark
+      mark: result.mark
     };
   });
 
@@ -216,6 +166,8 @@ function readMarks() {
     ? null
     : {
       mode: config.mode,
+      max: config.max,
+      resultLabel: config.resultLabel,
       marks
     };
 }
@@ -278,7 +230,8 @@ function calculateGpa(average) {
   return 4.00;
 }
 
-function renderPartialResults(marks) {
+function renderStandaloneResults(result) {
+  const { marks, max, resultLabel } = result;
   const totalCredits = marks.reduce(
     (sum, course) => sum + course.credits,
     0
@@ -291,15 +244,15 @@ function renderPartialResults(marks) {
   );
 
   const average = weightedTotal / totalCredits;
-  const averageOutOf100 = (average / 30) * 100;
+  const averageOutOf100 = (average / max) * 100;
 
-  averageValue.textContent = `${average.toFixed(2)} / 30`;
+  averageValue.textContent = `${average.toFixed(2)} / ${max}`;
   gpaValue.textContent = "--";
 
   gpaNote.textContent =
-    `Partial weighted average equals ${averageOutOf100.toFixed(2)}% of the partial mark.`;
+    `${resultLabel} weighted average equals ${averageOutOf100.toFixed(2)}%.`;
 
-  overallStatus.textContent = "Partial only";
+  overallStatus.textContent = resultLabel;
   overallStatus.className = "status-pill not-ready";
 
   resultBody.innerHTML = marks
@@ -308,7 +261,7 @@ function renderPartialResults(marks) {
         <tr>
           <td>${course.name || course.code}</td>
           <td>${course.credits}</td>
-          <td>${course.mark.toFixed(2)} / 30</td>
+          <td>${course.mark} / ${max}</td>
           <td>
             <span class="course-status not-ready">
               Recorded
@@ -320,7 +273,7 @@ function renderPartialResults(marks) {
     .join("");
 }
 
-function renderFinalResults(marks, mode) {
+function renderCourseGradeResults(marks) {
   const totalCredits = marks.reduce(
     (sum, course) => sum + course.credits,
     0
@@ -370,7 +323,7 @@ function renderFinalResults(marks, mode) {
         <tr>
           <td>${course.name || course.code}</td>
           <td>${course.credits}</td>
-          <td>${formatCourseMark(course, mode)}</td>
+          <td>${course.mark} / 100</td>
           <td>
             <span class="course-status ${course.status.toLowerCase()}">
               ${course.status}
@@ -382,21 +335,13 @@ function renderFinalResults(marks, mode) {
     .join("");
 }
 
-function formatCourseMark(course, mode) {
-  if (mode === "final-no-partial") {
-    return `${course.final.toFixed(2)} / 100`;
-  }
-
-  return `${course.partial.toFixed(2)} + ${course.final.toFixed(2)} = ${course.mark.toFixed(2)}`;
-}
-
 function renderResults(result) {
-  if (result.mode === "partial") {
-    renderPartialResults(result.marks);
+  if (result.mode !== "final100") {
+    renderStandaloneResults(result);
     return;
   }
 
-  renderFinalResults(result.marks, result.mode);
+  renderCourseGradeResults(result.marks);
 }
 
 function showValidationMessage() {
@@ -460,17 +405,12 @@ semesterInputs.forEach((input) => {
   });
 });
 
-examTypeInputs.forEach((input) => {
+markModeInputs.forEach((input) => {
   input.addEventListener("change", () => {
-    selectedExamType = input.value;
+    selectedMarkMode = input.value;
     buildInputs();
     resetResults();
   });
-});
-
-noPartialInput.addEventListener("change", () => {
-  buildInputs();
-  resetResults();
 });
 
 form.addEventListener("submit", (event) => {

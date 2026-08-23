@@ -1,12 +1,12 @@
 # Course Average Calculator BY JAD MATAR
 
-A static GitHub Pages website for calculating partial marks, final grades, weighted averages, GPA, and course statuses for Sem 3 and Sem 4.
+A static GitHub Pages website for calculating partial marks, final exam marks, final course grades, weighted averages, GPA, and course statuses for Sem 3 and Sem 4.
 
 ## Rules
 
 - Partial exam marks are over 30.
-- Final exam marks are over 70 and are added to the partial mark.
-- If there are no partial exams, the final mark is entered directly over 100.
+- Final exam marks are over 70 and are calculated independently.
+- Course grade marks are entered directly over 100.
 - A course passes with a mark of 50 or higher.
 - If the total weighted average is 55 or higher, any course mark from 40 to 49 is marked as compensation.
 - Any course mark below 40 is marked as fail.
