@@ -24,6 +24,24 @@ const semesters = {
       { code: "I2210", credits: 5 },
       { code: "I2236", name: "I2236/Optional Course", credits: 3 }
     ]
+  },
+
+  sem5: {
+    label: "Sem 5",
+    courses: [
+      { code: "I3301", name: "I3301 Software Engineering", credits: 4 },
+      { code: "I3302", name: "I3302 PHP", credits: 4 },
+      { code: "I3303", name: "I3303 OS 2", credits: 4 },
+      { code: "I3304", name: "I3304 Network 2", credits: 4 },
+      { code: "I3305", name: "I3305 GUI", credits: 3 },
+      { code: "I3306", name: "I3306 Database 2", credits: 3 },
+      {
+        code: "YEAR3-ELECTIVE",
+        name: "Elective Course (Mobile Application or System Administration)",
+        credits: 5
+      },
+      { code: "DHR300", name: "DHR300 Human Rights", credits: 3 }
+    ]
   }
 };
 
